@@ -41,13 +41,18 @@ function triggerClick(element) {
 
   if (categoryId == "NEW") {
 
-    newCategoryTitle = element.getAttribute("data-title");
+    if(confirm("Do you want to create a new folder?")) {
+      newCategoryTitle = element.getAttribute("data-title");
 
-    chrome.bookmarks.create({
-      title: newCategoryTitle
-    }, function(res) {
-      processBookmark(res.id);
-    })
+      chrome.bookmarks.create({
+        title: newCategoryTitle
+      }, function(res) {
+        processBookmark(res.id);
+      })
+    } else {
+      var searchElement = document.getElementById("search");
+      searchElement.focus();
+    }
 
   } else {
 
