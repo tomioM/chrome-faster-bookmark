@@ -93,7 +93,7 @@ span:first-child {
 
 .create {
   margin-top: 10px;
-  /* border-top: 1px solid var; */
+  /* border-top: 1px solid var(--detail-colour); */
   white-space: normal;
 }
 
