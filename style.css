@@ -34,6 +34,18 @@
   -webkit-border-radius: 6px;
 }
 
+em {
+  color: var(--item-select-bg);
+  font-weight: 700;
+}
+.focus em {
+  color: var(--background-colour);
+}
+
+.add-folder {
+  color: var(--item-select-bg);
+}
+
 .wrapper-fade {
   position: absolute;
   left: 0%;
@@ -110,9 +122,13 @@ span:first-child {
 }
 
 .create {
-  margin-top: 10px;
+  /* margin-top: 10px; */
   /* border-top: 1px solid var(--detail-colour); */
-  white-space: normal;
+  /* white-space: normal; */
+}
+
+.create:focus {
+  background-color: red !important;
 }
 
 #wrapper {

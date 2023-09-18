@@ -125,7 +125,7 @@ function addCreateCategoryButton(categoryName) {
   el.setAttribute("data-id", "NEW");
   el.setAttribute("data-title", categoryName);
   el.classList.add("create");
-  el.innerHTML = chrome.i18n.getMessage("new") + "+ " + categoryName;
+  el.innerHTML = chrome.i18n.getMessage("new") + "<em>create:</em> " + categoryName;
 
   wrapper.appendChild(el);
   currentNodeCount = currentNodeCount + 1;
@@ -204,6 +204,13 @@ function createInitialTree() {
           if (!newNodes.length || text !== newNodes[0].title) {
             addCreateCategoryButton(text);
           }
+
+          // focus new node option without user action
+          console.log(!newNodes.length);
+          if (!newNodes.length) {
+            focusItem(0);
+          }
+
 
         } else {
           resetUi();
