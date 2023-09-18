@@ -34,6 +34,24 @@
   -webkit-border-radius: 6px;
 }
 
+.wrapper-fade {
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  height: 20px;
+  pointer-events: none;
+}
+
+.wrapper-fade.top {
+  top: 28px;
+  background-image: linear-gradient(to bottom, var(--background-colour), rgba(255,0,0,0));
+}
+
+.wrapper-fade.bottom {
+  bottom: 0%;
+  background-image: linear-gradient(to top, var(--background-colour), rgba(255,0,0,0));
+}
+
 body {
   color: var(--text-colour);
   background-color: var(--background-colour);
@@ -98,6 +116,7 @@ span:first-child {
 }
 
 #wrapper {
+  padding-top: 10px;
   display: block;
   height: 350px;
   overflow-y: auto;
@@ -120,6 +139,7 @@ h2 {
 }
 
 #searchbar {
-  margin-bottom: 14px;
+  /* margin-bottom: 14px; */
+  z-index: 9999;
   position: relative;
 }
