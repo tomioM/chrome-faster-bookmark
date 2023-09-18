@@ -13,7 +13,6 @@
 	--link-hover-colour: #9abbfd;
 
 	--detail-colour: #999999;
-	--ui-icon-colour: #999999;
 
 	--field-radius: 8px;
 	--serperator: rgba(0, 0, 0, 0);
@@ -31,7 +30,6 @@
 ::-webkit-scrollbar-thumb:vertical {
   height: 40px;
   background-color: var(--input);
-  /* border: 1px solid #eee; */
   -webkit-border-radius: 6px;
 }
 
@@ -45,11 +43,18 @@ body {
   width: 100%;
   padding: 10px 37px 10px 10px;
   border: 0px;
+  border-radius: var(--field-radius);
   height: 28px;
-  outline-width: 1px;
-  outline-color: #4c4c4c;
   /*outline-offset: -2px;*/
-  outline-style: auto;
+  background-color: var(--input);
+  color: var(--text-colour);
+  
+}
+
+#search:focus {
+  outline-width: 2px;
+  outline-color: var(--item-select-bg);
+  outline-style: solid;
 }
 
 span {
@@ -60,22 +65,25 @@ span {
   white-space: nowrap;
   padding: 5px 10px;
   cursor: pointer;
-  -webkit-transition: background 0.1s ease-out;
+  /* -webkit-transition: background 0.1s ease-out; */
 }
 
 span:hover + span:not(.create), .focus + span:not(.create) {
   border-top-color: transparent;
 }
 
-span:hover, .focus {
-  /*color: #000;*/
-  border-radius: 1px;
-  background: #C5ECFC;
-  /*background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#fafafa)) !important;
-  -webkit-box-shadow: 1px 1px rgba(200, 200, 200, 0.5);
-  text-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-  -webkit-border-radius: 1px;
-  border: 1px solid #d6d6d6 !important;*/
+span:hover {
+  background: var(--item-hover-bg);
+}
+
+.focus {
+  background: var(--item-select-bg);
+  color: var(--background-colour);
+}
+
+span.focus:hover {
+  background: var(--item-hover-select-bg);
+  color: var(--background-colour);
 }
 
 span:first-child {
@@ -84,7 +92,7 @@ span:first-child {
 
 .create {
   margin-top: 10px;
-  border-top: 1px solid #eee;
+  /* border-top: 1px solid var; */
   white-space: normal;
 }
 
