@@ -9,7 +9,7 @@
          "38": "action.png"
       },
       "default_popup": "background.html",
-      "default_title": "Faster Bookmark Button"
+      "default_title": "Quick Bookmark"
    },
    "commands": {
       "_execute_browser_action": {
