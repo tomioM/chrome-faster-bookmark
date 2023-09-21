@@ -11,8 +11,10 @@ var DOWN_KEYCODE = 40;
 var UP_KEYCODE = 38;
 var CONFIRM_KEYCODE = 13;
 
+// Filter function is the create tree function
 function filterRecursively(nodeArray, childrenProperty, filterFn, results) {
 
+  // console.log(nodeArray);
   results = results || [];
 
   nodeArray.forEach( function( node ) {
@@ -106,6 +108,7 @@ function createUiFromNodes( categoryNodes ) {
 
   var categoryUiElements = [];
   currentNodeCount = categoryNodes.length;
+  // console.log(categoryNodes);
 
   categoryNodes.forEach( function( node ) {
     categoryUiElements.push( createUiElement(node) );
@@ -168,10 +171,14 @@ function createInitialTree() {
     }
     
     categoryNodes = filterRecursively(t, "children", function(node) {
+      // add special case for other bookmarks and bookmarks bar
+      if (!node.url && node.id == 0) console.log(node.children);
       return !node.url && node.id > 0;
     }).sort(function(a, b) {
       return b.dateGroupModified - a.dateGroupModified;
-    })
+    });
+
+    console.log(categoryNodes);
 
     createUiFromNodes( categoryNodes );
 
