@@ -50,7 +50,7 @@ em {
   position: absolute;
   left: 0%;
   right: 0%;
-  height: 15px;
+  height: 10px;
   pointer-events: none;
   opacity: 75%;
 }
