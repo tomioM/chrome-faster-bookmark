@@ -50,12 +50,13 @@ em {
   position: absolute;
   left: 0%;
   right: 0%;
-  height: 20px;
+  height: 15px;
   pointer-events: none;
+  opacity: 75%;
 }
 
 .wrapper-fade.top {
-  top: 28px;
+  top: 0%;
   background-image: linear-gradient(to bottom, var(--background-colour), rgba(255,0,0,0));
 }
 
@@ -64,12 +65,20 @@ em {
   background-image: linear-gradient(to top, var(--background-colour), rgba(255,0,0,0));
 }
 
+#container {
+  position: relative;
+}
+
+#name-field {
+  margin-top: 7px;
+}
+
 body {
   color: var(--text-colour);
   background-color: var(--background-colour);
 }
 
-#search{
+input {
   display: block;
   width: 100%;
   padding: 10px 37px 10px 10px;
@@ -82,7 +91,7 @@ body {
   
 }
 
-#search:focus {
+input:focus {
   outline-width: 2px;
   outline-color: var(--item-select-bg);
   outline-style: solid;
@@ -134,9 +143,9 @@ span:first-child {
 #wrapper {
   padding-top: 10px;
   display: block;
-  height: 350px;
-  overflow-y: auto;
   padding-right: 4px;
+  overflow-y: auto;
+  height: 350px;
 }
 
 #searchimg {

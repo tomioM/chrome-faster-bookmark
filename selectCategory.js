@@ -3,6 +3,9 @@ var wrapper;
 var focusedElement;
 var fuzzySearch;
 var currentNodeCount = 0;
+var isNameExposed = false;
+var nameFieldElement = document.getElementById("name-field");
+
 
 var DOWN_KEYCODE = 40;
 var UP_KEYCODE = 38;
@@ -66,8 +69,14 @@ function processBookmark(categoryId) {
 
   getCurrentUrlData(function(url, title) {
 
+
     if (title && categoryId && url) {
-      addBookmarkToCategory(categoryId, title, url);
+      if (isNameExposed) {
+        const editedTitle = nameFieldElement.value
+        addBookmarkToCategory(categoryId, editedTitle, url);
+      } else {
+        addBookmarkToCategory(categoryId, title, url);
+      }
       window.close();
     }
 
@@ -172,62 +181,81 @@ function createInitialTree() {
 
 (function() {
 
-  var searchElement = document.getElementById("search");
+  var searchElements = document.querySelectorAll("input");
   var text = "";
   var newNodes;
   var index = 0;
 
   createInitialTree();
 
-  searchElement.addEventListener("keydown", function(e) {
+  searchElements.forEach(searchElement => {
+    searchElement.addEventListener("keydown", function(e) {
 
-    if (e.keyCode == UP_KEYCODE) {
-      e.preventDefault();
-      index = index - 1;
-      if (index < 0) index = currentNodeCount - 1;
-      focusItem(index);
-
-    } else if (e.keyCode == DOWN_KEYCODE) {
-      e.preventDefault();
-      index = index + 1;
-      if (index >= currentNodeCount) index = 0;
-      focusItem(index);
-
-    } else if (e.keyCode == CONFIRM_KEYCODE) {
-      if (currentNodeCount > 0) triggerClick(focusedElement);
-    
-    } else {
-      // to get updated input value, we need to schedule it to the next tick
-      setTimeout( function() {
-        text = document.getElementById("search").value;
-        if (text.length) {
-          newNodes = fuzzySearch.search(text);
-          resetUi(); 
-          createUiFromNodes(newNodes) 
-          if (newNodes.length) focusItem(0);
-
-          if (!newNodes.length || text !== newNodes[0].title) {
-            addCreateCategoryButton(text);
+      if (e.keyCode == UP_KEYCODE) {
+        e.preventDefault();
+        index = index - 1;
+        if (index < 0) index = currentNodeCount - 1;
+        focusItem(index);
+  
+      } else if (e.keyCode == DOWN_KEYCODE) {
+        e.preventDefault();
+        index = index + 1;
+        if (index >= currentNodeCount) index = 0;
+        focusItem(index);
+  
+      } else if (e.shiftKey && e.key == 'Enter') {
+        e.preventDefault();
+        if (isNameExposed) {
+          const activeElement = document.activeElement;
+          if (activeElement == searchElements[1]) {
+            searchElements[0].focus();
+          } else {
+            searchElements[1].focus();
           }
-
-          // focus new node option without user action
-          console.log(!newNodes.length);
-          if (!newNodes.length) {
-            focusItem(0);
-          }
-
-
         } else {
-          resetUi();
-          createUiFromNodes(categoryNodes);
-          if (currentNodeCount > 0) focusItem(0);
+          isNameExposed = true;
+          nameFieldElement.style.display = 'block';
+          nameFieldElement.focus();
+          getCurrentUrlData((url, title) => {nameFieldElement.value = title});
         }
-        index = 0;
-      }, 0);
-    }
-
+  
+      } else if (e.keyCode == CONFIRM_KEYCODE) {
+        if (currentNodeCount > 0) triggerClick(focusedElement);
+      
+      } else {
+        // to get updated input value, we need to schedule it to the next tick
+        setTimeout( function() {
+          text = document.getElementById("search").value;
+          if (text.length) {
+            newNodes = fuzzySearch.search(text);
+            resetUi(); 
+            createUiFromNodes(newNodes) 
+            if (newNodes.length) focusItem(0);
+  
+            if (!newNodes.length || text !== newNodes[0].title) {
+              addCreateCategoryButton(text);
+            }
+  
+            // focus new node option without user action
+            console.log(!newNodes.length);
+            if (!newNodes.length) {
+              focusItem(0);
+            }
+  
+  
+          } else {
+            resetUi();
+            createUiFromNodes(categoryNodes);
+            if (currentNodeCount > 0) focusItem(0);
+          }
+          index = 0;
+        }, 0);
+      }
+  
+    })
   })
 
-  searchElement.focus();
+
+  searchElements[0].focus();
 
 })();
