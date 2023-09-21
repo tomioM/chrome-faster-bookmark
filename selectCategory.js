@@ -171,14 +171,12 @@ function createInitialTree() {
     }
     
     categoryNodes = filterRecursively(t, "children", function(node) {
-      // add special case for other bookmarks and bookmarks bar
-      if (!node.url && node.id == 0) console.log(node.children);
       return !node.url && node.id > 0;
-    }).sort(function(a, b) {
-      return b.dateGroupModified - a.dateGroupModified;
-    });
+    })
 
-    console.log(categoryNodes);
+    categoryNodes.sort(function(a, b) {
+      return (b.dateGroupModified || b.dateAdded) - (a.dateGroupModified || a.dateAdded);
+    });
 
     createUiFromNodes( categoryNodes );
 
@@ -194,6 +192,25 @@ function createInitialTree() {
 
   });
 
+}
+
+// Function to recursively flatten the bookmark tree
+function flattenBookmarkTree(treeNode) {
+  const flattenedNodes = [];
+
+  function flatten(node) {
+    if (!node.url) {
+      flattenedNodes.push(node);
+      if (node.children) {
+        for (const childNode of node.children) {
+          flatten(childNode);
+        }
+      }
+    }
+  }
+
+  flatten(treeNode[0]);
+  return flattenedNodes;
 }
 
 (function() {
