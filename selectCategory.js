@@ -75,7 +75,7 @@ function processBookmark(categoryId) {
         const editedTitle = nameFieldElement.value
         addBookmarkToCategory(categoryId, editedTitle, url);
       } else {
-        addBookmarkToCategory(categoryId, title, url);
+        addBookmarkToCategory(categoryId, stripNotificationPrefix(title), url);
       }
       window.close();
     }
@@ -144,6 +144,16 @@ function addCreateCategoryButton(categoryName) {
   wrapper.appendChild(el);
   currentNodeCount = currentNodeCount + 1;
 
+}
+
+function stripNotificationPrefix(inputString) {
+  // Define a regular expression pattern to match '(n)' at the beginning of the string
+  const pattern = /^\(\d+\)/;
+
+  // Use the replace method to remove the matched pattern
+  const strippedString = inputString.replace(pattern, '').trim();
+
+  return strippedString;
 }
 
 function createInitialTree() {
@@ -216,7 +226,7 @@ function createInitialTree() {
           isNameExposed = true;
           nameFieldElement.style.display = 'block';
           nameFieldElement.focus();
-          getCurrentUrlData((url, title) => {nameFieldElement.value = title});
+          getCurrentUrlData((url, title) => {nameFieldElement.value = stripNotificationPrefix(title)});
         }
   
       } else if (e.keyCode == CONFIRM_KEYCODE) {
