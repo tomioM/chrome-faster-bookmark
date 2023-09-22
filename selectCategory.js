@@ -77,7 +77,7 @@ function processBookmark(categoryId) {
         const editedTitle = nameFieldElement.value
         addBookmarkToCategory(categoryId, editedTitle, url);
       } else {
-        addBookmarkToCategory(categoryId, stripNotificationPrefix(title), url);
+        addBookmarkToCategory(categoryId, stripBookmarkName(title), url);
       }
       window.close();
     }
@@ -149,12 +149,19 @@ function addCreateCategoryButton(categoryName) {
 
 }
 
-function stripNotificationPrefix(inputString) {
+function stripBookmarkName(inputString) {
   // Define a regular expression pattern to match '(n)' at the beginning of the string
-  const pattern = /^\(\d+\)/;
+  const notificationSuffixRegex = /^\(\d+\)/;
+  const finalHyphenRegex = /-[^-]*/;
 
   // Use the replace method to remove the matched pattern
-  const strippedString = inputString.replace(pattern, '').trim();
+  let strippedString;
+
+  strippedString = inputString.replace(notificationSuffixRegex, '');
+
+  strippedString = strippedString.replace(finalHyphenRegex, '');
+
+  strippedString = strippedString.trim();
 
   return strippedString;
 }
@@ -250,7 +257,7 @@ function flattenBookmarkTree(treeNode) {
           isNameExposed = true;
           nameFieldElement.style.display = 'block';
           nameFieldElement.focus();
-          getCurrentUrlData((url, title) => {nameFieldElement.value = stripNotificationPrefix(title)});
+          getCurrentUrlData((url, title) => {nameFieldElement.value = stripBookmarkName(title)});
         }
   
       } else if (e.keyCode == CONFIRM_KEYCODE) {
