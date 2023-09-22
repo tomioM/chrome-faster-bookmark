@@ -5,6 +5,11 @@ var fuzzySearch;
 var currentNodeCount = 0;
 var isNameExposed = false;
 var nameFieldElement = document.getElementById("name-field");
+// name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
+const nameSuffixRegex = / (-|–|—|:|\|)(?!.* (-|–|—|:|\|)).*/;
+const notificationSuffixRegex = /^\(\d+\)/;
+
+
 
 
 var DOWN_KEYCODE = 40;
@@ -150,28 +155,19 @@ function addCreateCategoryButton(categoryName) {
 }
 
 function matchNameSuffix(inputString) {
-  // Define your regex pattern
-  const regexPattern = / (-|–|—|\|)(?!.* (-|–|—|\|)).*/;
-
-  console.log(inputString);
-
   // Use the regex pattern to match text within the input
-  const match = inputString.match(regexPattern);
+  const match = inputString.match(nameSuffixRegex);
 
   return match;
 }
 
 function stripBookmarkName(inputString) {
-  // Define a regular expression pattern to match '(n)' at the beginning of the string
-  const notificationSuffixRegex = /^\(\d+\)/;
-  const finalHyphenRegex = / (-|–|—|\|)(?!.* (-|–|—|\|)).*/;
-
   // Use the replace method to remove the matched pattern
   let strippedString;
 
   strippedString = inputString.replace(notificationSuffixRegex, '');
 
-  strippedString = strippedString.replace(finalHyphenRegex, '');
+  if (!isNameExposed) strippedString = strippedString.replace(nameSuffixRegex, '');
 
   strippedString = strippedString.trim();
 
@@ -275,8 +271,8 @@ function flattenBookmarkTree(treeNode) {
 
             nameFieldElement.value = strippedName;
 
-            // Selects (highlights) the portion of the string that is often removed. Currently disabled as the strip function does it by default
-            // if (match) nameFieldElement.setSelectionRange(match.index, match.index + match[0].length);
+            // Selects (highlights) the portion of the string that is often removed.
+            if (match) nameFieldElement.setSelectionRange(match.index, match.index + match[0].length);
 
             nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
 
