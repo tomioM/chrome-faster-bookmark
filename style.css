@@ -46,6 +46,14 @@ em {
   color: var(--item-select-bg);
 }
 
+#name-preview {
+  color: var(--detail-colour);
+}
+
+#name-preview > span.omitted {
+  color: red;
+}
+
 .wrapper-fade {
   position: absolute;
   left: 0%;
@@ -97,7 +105,7 @@ input:focus {
   outline-style: solid;
 }
 
-span {
+span.folder {
   /*font-family: "Lucida Grande", Tahoma, sans-serif;*/
   font-size: 14px;
   color: var(--text-colour);
@@ -108,25 +116,25 @@ span {
   /* -webkit-transition: background 0.1s ease-out; */
 }
 
-span:hover + span:not(.create), .focus + span:not(.create) {
+span.folder:hover + span.folder:not(.create), .focus + span.folder:not(.create) {
   border-top-color: transparent;
 }
 
-span:hover {
+span.folder:hover {
   background: var(--item-hover-bg);
 }
 
-.focus {
+span.folder.focus {
   background: var(--item-select-bg);
   color: var(--background-colour);
 }
 
-span.focus:hover {
+span.folder.focus:hover {
   background: var(--item-hover-select-bg);
   color: var(--background-colour);
 }
 
-span:first-child {
+span.folder:first-child {
   border-top-color: transparent;
 }
 

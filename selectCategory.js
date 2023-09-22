@@ -6,7 +6,7 @@ var currentNodeCount = 0;
 var isNameExposed = false;
 var nameFieldElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
-const nameSuffixRegex = / (-|–|—|:|\|)(?!.* (-|–|—|:|\|)).*/;
+const namePrefixRegex = / (-|–|—|:|\|)(?!.* (-|–|—|:|\|)).*/;
 const notificationSuffixRegex = /^\(\d+\)/;
 
 
@@ -154,11 +154,34 @@ function addCreateCategoryButton(categoryName) {
 
 }
 
+function wrapSubstringWithSpan(string, substring, className) {
+  if (string && substring) {
+      const index = string.indexOf(substring);
+      if (index !== -1) {
+          const before = string.substring(0, index);
+          const after = string.substring(index + substring.length);
+          return before + `<span class="${className}">${substring}</span>` + after;
+      }
+  } else {
+    return string;
+  }
+}
+
 function matchNameSuffix(inputString) {
   // Use the regex pattern to match text within the input
-  const match = inputString.match(nameSuffixRegex);
+  const match = inputString.match(namePrefixRegex);
 
-  return match;
+  if (match) return match;
+  else return '';
+}
+
+function matchNotificationPrefix(inputString) {
+  // Use the regex pattern to match text within the input
+  console.log(inputString)
+  const match = inputString.match(notificationSuffixRegex);
+  
+  if (match) return match;
+  else return '';
 }
 
 function stripBookmarkName(inputString) {
@@ -167,7 +190,7 @@ function stripBookmarkName(inputString) {
 
   strippedString = inputString.replace(notificationSuffixRegex, '');
 
-  if (!isNameExposed) strippedString = strippedString.replace(nameSuffixRegex, '');
+  if (!isNameExposed) strippedString = strippedString.replace(namePrefixRegex, '');
 
   strippedString = strippedString.trim();
 
@@ -231,9 +254,28 @@ function flattenBookmarkTree(treeNode) {
 (function() {
 
   var searchElements = document.querySelectorAll("input");
+  var namePreviewElement = document.querySelector("#name-preview");
   var text = "";
   var newNodes;
   var index = 0;
+
+  // Create name preview element and use both regex strings to indicate the omission of characters
+  getCurrentUrlData((url, title) => {
+    let highlightedHTML = title
+
+    console.log(highlightedHTML)
+
+    highlightedHTML = wrapSubstringWithSpan(highlightedHTML, matchNameSuffix(highlightedHTML)[0], 'omitted');
+    console.log(highlightedHTML)
+
+    highlightedHTML = wrapSubstringWithSpan(highlightedHTML, matchNotificationPrefix(highlightedHTML)[0], 'omitted');
+
+    console.log(highlightedHTML);
+
+    console.log(namePreviewElement);
+    namePreviewElement.innerHTML = highlightedHTML;
+  })
+
 
   createInitialTree();
 
@@ -260,6 +302,7 @@ function flattenBookmarkTree(treeNode) {
             searchElements[0].focus();
           } else {
             searchElements[1].focus();
+            nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
           }
         } else {
           isNameExposed = true;
