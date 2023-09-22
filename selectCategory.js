@@ -175,7 +175,7 @@ function createInitialTree() {
     })
 
     categoryNodes.sort(function(a, b) {
-      return (b.dateGroupModified || b.dateAdded) - (a.dateGroupModified || a.dateAdded);
+      return (b.dateGroupModified || b.dateAdded || 0) - (a.dateGroupModified || a.dateAdded || 0);
     });
 
     createUiFromNodes( categoryNodes );
