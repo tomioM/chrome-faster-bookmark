@@ -146,6 +146,7 @@ function addCreateCategoryButton(categoryName) {
   var el = document.createElement("span");
   el.setAttribute("data-id", "NEW");
   el.setAttribute("data-title", categoryName);
+  el.classList.add("folder");
   el.classList.add("create");
   el.innerHTML = chrome.i18n.getMessage("new") + "<em>create:</em> " + categoryName;
 
@@ -154,14 +155,17 @@ function addCreateCategoryButton(categoryName) {
 
 }
 
-function wrapSubstringWithSpan(string, substring, className) {
-  if (string && substring) {
-      const index = string.indexOf(substring);
-      if (index !== -1) {
-          const before = string.substring(0, index);
-          const after = string.substring(index + substring.length);
-          return before + `<span class="${className}">${substring}</span>` + after;
+function wrapSubstringWithSpan(string, substrings, className) {
+  if (string) {
+    let text = string;
+
+    substrings.forEach(substring => {
+      if (substring) {
+        text = text.replace(substring, `<span class="${className}">${substring}</span>`);
       }
+    })
+
+    return text;
   } else {
     return string;
   }
@@ -263,19 +267,13 @@ function flattenBookmarkTree(treeNode) {
   getCurrentUrlData((url, title) => {
     let highlightedHTML = title
 
-    console.log(highlightedHTML)
+    highlightedHTML = wrapSubstringWithSpan(highlightedHTML, [ 
+      matchNameSuffix(highlightedHTML)[0],
+      matchNotificationPrefix(highlightedHTML)[0]
+    ], 'omitted');
 
-    highlightedHTML = wrapSubstringWithSpan(highlightedHTML, matchNameSuffix(highlightedHTML)[0], 'omitted');
-    console.log(highlightedHTML)
-
-    highlightedHTML = wrapSubstringWithSpan(highlightedHTML, matchNotificationPrefix(highlightedHTML)[0], 'omitted');
-
-    console.log(highlightedHTML);
-
-    console.log(namePreviewElement);
     namePreviewElement.innerHTML = highlightedHTML;
   })
-
 
   createInitialTree();
 
@@ -307,6 +305,7 @@ function flattenBookmarkTree(treeNode) {
         } else {
           isNameExposed = true;
           nameFieldElement.style.display = 'block';
+          namePreviewElement.style.display = 'none';
           getCurrentUrlData((url, title) => {
             let strippedName = stripBookmarkName(title);
 
@@ -360,6 +359,6 @@ function flattenBookmarkTree(treeNode) {
   })
 
 
-  searchElements[0].focus();
+  searchElements[1].focus();
 
 })();
