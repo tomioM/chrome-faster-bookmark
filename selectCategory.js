@@ -6,7 +6,7 @@ var currentNodeCount = 0;
 var isNameExposed = false;
 var nameFieldElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
-const namePrefixRegex = / (-|–|—|:|\|)(?!.* (-|–|—|:|\|)).*/;
+const namePrefixRegex = /( -| –| —|:| \|)(?!.*( -| –| —|:| \|)).*/;
 const notificationSuffixRegex = /^\(\d+\)/;
 
 
@@ -190,9 +190,9 @@ function matchNotificationPrefix(inputString) {
 
 function stripBookmarkName(inputString) {
   // Use the replace method to remove the matched pattern
-  let strippedString;
+  let strippedString = inputString;
 
-  strippedString = inputString.replace(notificationSuffixRegex, '');
+  strippedString = strippedString.replace(notificationSuffixRegex, '');
 
   if (!isNameExposed) strippedString = strippedString.replace(namePrefixRegex, '');
 
