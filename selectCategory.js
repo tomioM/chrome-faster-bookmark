@@ -303,23 +303,7 @@ function flattenBookmarkTree(treeNode) {
             nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
           }
         } else {
-          isNameExposed = true;
-          nameFieldElement.style.display = 'block';
-          namePreviewElement.style.display = 'none';
-          getCurrentUrlData((url, title) => {
-            let strippedName = stripBookmarkName(title);
-
-            const match = matchNameSuffix(strippedName);
-
-            nameFieldElement.value = strippedName;
-
-            // Selects (highlights) the portion of the string that is often removed.
-            if (match) nameFieldElement.setSelectionRange(match.index, match.index + match[0].length);
-
-            nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
-
-            nameFieldElement.focus();
-          });
+          exposeName();
         }
   
       } else if (e.keyCode == CONFIRM_KEYCODE) {
@@ -360,5 +344,27 @@ function flattenBookmarkTree(treeNode) {
 
 
   searchElements[1].focus();
+
+  namePreviewElement.addEventListener("click", exposeName);
+
+  function exposeName() {
+    isNameExposed = true;
+    nameFieldElement.style.display = 'block';
+    namePreviewElement.style.display = 'none';
+    getCurrentUrlData((url, title) => {
+      let strippedName = stripBookmarkName(title);
+
+      const match = matchNameSuffix(strippedName);
+
+      nameFieldElement.value = strippedName;
+
+      // Selects (highlights) the portion of the string that is often removed.
+      if (match) nameFieldElement.setSelectionRange(match.index, match.index + match[0].length);
+
+      nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
+
+      nameFieldElement.focus();
+    });
+  }
 
 })();
