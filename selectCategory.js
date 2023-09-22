@@ -149,10 +149,22 @@ function addCreateCategoryButton(categoryName) {
 
 }
 
+function matchNameSuffix(inputString) {
+  // Define your regex pattern
+  const regexPattern = / (-|–|—|\|)(?!.* (-|–|—|\|)).*/;
+
+  console.log(inputString);
+
+  // Use the regex pattern to match text within the input
+  const match = inputString.match(regexPattern);
+
+  return match;
+}
+
 function stripBookmarkName(inputString) {
   // Define a regular expression pattern to match '(n)' at the beginning of the string
   const notificationSuffixRegex = /^\(\d+\)/;
-  const finalHyphenRegex = /-[^-]*/;
+  const finalHyphenRegex = / (-|–|—|\|)(?!.* (-|–|—|\|)).*/;
 
   // Use the replace method to remove the matched pattern
   let strippedString;
@@ -256,8 +268,20 @@ function flattenBookmarkTree(treeNode) {
         } else {
           isNameExposed = true;
           nameFieldElement.style.display = 'block';
-          nameFieldElement.focus();
-          getCurrentUrlData((url, title) => {nameFieldElement.value = stripBookmarkName(title)});
+          getCurrentUrlData((url, title) => {
+            let strippedName = stripBookmarkName(title);
+
+            const match = matchNameSuffix(strippedName);
+
+            nameFieldElement.value = strippedName;
+
+            // Selects (highlights) the portion of the string that is often removed. Currently disabled as the strip function does it by default
+            // if (match) nameFieldElement.setSelectionRange(match.index, match.index + match[0].length);
+
+            nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
+
+            nameFieldElement.focus();
+          });
         }
   
       } else if (e.keyCode == CONFIRM_KEYCODE) {
