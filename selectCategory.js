@@ -258,7 +258,7 @@ function flattenBookmarkTree(treeNode) {
 function updateNameTitleAttribute() {
   console.log('update title')
   const inputValue = nameFieldElement.value;
-  nameFieldElement.setAttribute('title', `Name:\n${inputValue}`);
+  nameFieldElement.setAttribute('title', `Name\n${inputValue}`);
 }
 
 (function() {
