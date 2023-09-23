@@ -3,6 +3,7 @@
 	--background-colour: #2d2e31;
 	--popover-colour: #2d2e31;  /*363739*/
 	--input: #202124;
+  --focus: #3e7cf7;
 
 	--item-hover-bg: #3d4043;
 	--item-select-bg: #94b5f6;
@@ -10,7 +11,6 @@
 
 
 	--link-colour: #cecece;
-	--link-hover-colour: #9abbfd;
 
 	--detail-colour: #999999;
 
@@ -107,7 +107,7 @@ input {
 
 input:focus {
   outline-width: 2px;
-  outline-color: var(--item-select-bg);
+  outline-color: var(--focus);
   outline-style: solid;
 }
 
