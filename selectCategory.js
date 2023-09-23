@@ -8,7 +8,6 @@ var nameFieldElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const namePrefixRegex = /( -| –| —|:| \|)(?!.*( -| –| —|:| \|)).*/;
 const notificationSuffixRegex = /^\(\d+\)/;
-// const titleChunkSize = 50;
 
 
 
@@ -256,13 +255,9 @@ function flattenBookmarkTree(treeNode) {
   return flattenedNodes;
 }
 
-function setNameTitleAttribute() {
+function updateNameTitleAttribute() {
+  console.log('update title')
   const inputValue = nameFieldElement.value;
-  // let outputString = '';
-  // for (var i = 0; i < inputValue.length; i += titleChunkSize) {
-  //   outputString += inputValue.slice(i, i + titleChunkSize).trim() + '\n';
-  //   console.log(outputString);
-  // }
   nameFieldElement.setAttribute('title', `Name:\n${inputValue}`);
 }
 
@@ -349,12 +344,10 @@ function setNameTitleAttribute() {
           index = 0;
         }, 0);
       }
-  
-      if (isNameExposed) setNameTitleAttribute();
-
     })
   })
 
+  nameFieldElement.addEventListener('input', updateNameTitleAttribute);
 
   searchElements[1].focus();
 
@@ -377,7 +370,7 @@ function setNameTitleAttribute() {
       nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
 
       nameFieldElement.focus();
-      setNameTitleAttribute();
+      updateNameTitleAttribute();
     });
   }
 
