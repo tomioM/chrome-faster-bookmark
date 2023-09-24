@@ -255,6 +255,11 @@ function flattenBookmarkTree(treeNode) {
   return flattenedNodes;
 }
 
+function updateNameTitle() {
+  const inputValue = nameElement.value;
+  nameElement.setAttribute('title', `Name\n${inputValue}`);
+}
+
 (function() {
 
   var inputElements = document.querySelectorAll("input");
@@ -345,12 +350,9 @@ function flattenBookmarkTree(treeNode) {
       }
       index = 0;
     }, 0);
-  })
-
-  nameElement.addEventListener('input', () => {
-    const inputValue = nameElement.value;
-    nameElement.setAttribute('title', `Name\n${inputValue}`);
   });
+
+  nameElement.addEventListener('input', updateNameTitle);
 
   namePreviewElement.addEventListener("click", exposeName);
 
@@ -371,7 +373,7 @@ function flattenBookmarkTree(treeNode) {
       nameElement.scrollLeft = nameElement.scrollWidth;
 
       nameElement.focus();
-      updateNameTitleAttribute();
+      updateNameTitle();
     });
   }
 
