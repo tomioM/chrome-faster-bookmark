@@ -6,8 +6,8 @@ var currentNodeCount = 0;
 var isNameExposed = false;
 var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
-const namePrefixRegex = /( -| –| —|:| \|)(?!.*( -| –| —|:| \|)).*/;
-const notificationSuffixRegex = /^\(\d+\)/;
+const nameSuffixRegex = /( -| –| —|●|:| \|)(?!.*( -| –| —|●|:| \|)).*/;
+const notificationPrefixRegex = /^\(\d+\)/;
 
 
 
@@ -173,7 +173,7 @@ function wrapSubstringWithSpan(string, substrings, className) {
 
 function matchNameSuffix(inputString) {
   // Use the regex pattern to match text within the input
-  const match = inputString.match(namePrefixRegex);
+  const match = inputString.match(nameSuffixRegex);
 
   if (match) return match;
   else return '';
@@ -182,7 +182,7 @@ function matchNameSuffix(inputString) {
 function matchNotificationPrefix(inputString) {
   // Use the regex pattern to match text within the input
   console.log(inputString)
-  const match = inputString.match(notificationSuffixRegex);
+  const match = inputString.match(notificationPrefixRegex);
   
   if (match) return match;
   else return '';
@@ -192,9 +192,9 @@ function stripBookmarkName(inputString) {
   // Use the replace method to remove the matched pattern
   let strippedString = inputString;
 
-  strippedString = strippedString.replace(notificationSuffixRegex, '');
+  strippedString = strippedString.replace(notificationPrefixRegex, '');
 
-  if (!isNameExposed) strippedString = strippedString.replace(namePrefixRegex, '');
+  if (!isNameExposed) strippedString = strippedString.replace(nameSuffixRegex, '');
 
   strippedString = strippedString.trim();
 
@@ -271,7 +271,7 @@ function updateNameTitle() {
 
   // Create name preview element and use both regex strings to indicate the omission of characters
   getCurrentUrlData((url, title) => {
-    let highlightedHTML = title
+    let highlightedHTML = title;
 
     highlightedHTML = wrapSubstringWithSpan(highlightedHTML, [ 
       matchNameSuffix(highlightedHTML)[0],
