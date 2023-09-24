@@ -4,7 +4,7 @@ var focusedElement;
 var fuzzySearch;
 var currentNodeCount = 0;
 var isNameExposed = false;
-var nameFieldElement = document.getElementById("name-field");
+var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const namePrefixRegex = /( -| –| —|:| \|)(?!.*( -| –| —|:| \|)).*/;
 const notificationSuffixRegex = /^\(\d+\)/;
@@ -79,7 +79,7 @@ function processBookmark(categoryId) {
 
     if (title && categoryId && url) {
       if (isNameExposed) {
-        const editedTitle = nameFieldElement.value
+        const editedTitle = nameElement.value
         addBookmarkToCategory(categoryId, editedTitle, url);
       } else {
         addBookmarkToCategory(categoryId, stripBookmarkName(title), url);
@@ -255,15 +255,10 @@ function flattenBookmarkTree(treeNode) {
   return flattenedNodes;
 }
 
-function updateNameTitleAttribute() {
-  console.log('update title')
-  const inputValue = nameFieldElement.value;
-  nameFieldElement.setAttribute('title', `Name\n${inputValue}`);
-}
-
 (function() {
 
-  var searchElements = document.querySelectorAll("input");
+  var inputElements = document.querySelectorAll("input");
+  var searchElement = document.querySelector('#search');
   var namePreviewElement = document.querySelector("#name-preview");
   var text = "";
   var newNodes;
@@ -281,10 +276,11 @@ function updateNameTitleAttribute() {
     namePreviewElement.innerHTML = highlightedHTML;
   })
 
+  inputElements[1].focus();
   createInitialTree();
 
-  searchElements.forEach(searchElement => {
-    searchElement.addEventListener("keydown", function(e) {
+  inputElements.forEach(inputElement => {
+    inputElement.addEventListener("keydown", function(e) {
 
       if (e.keyCode == UP_KEYCODE) {
         e.preventDefault();
@@ -302,11 +298,11 @@ function updateNameTitleAttribute() {
         e.preventDefault();
         if (isNameExposed) {
           const activeElement = document.activeElement;
-          if (activeElement == searchElements[1]) {
-            searchElements[0].focus();
+          if (activeElement == nameElement) {
+            searchElement.focus();
           } else {
-            searchElements[1].focus();
-            nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
+            nameElement.focus();
+            nameElement.scrollLeft = nameElement.scrollWidth;
           }
         } else {
           exposeName();
@@ -316,60 +312,65 @@ function updateNameTitleAttribute() {
         if (currentNodeCount > 0) triggerClick(focusedElement);
       
       } else {
-        // to get updated input value, we need to schedule it to the next tick
-        setTimeout( function() {
-          text = document.getElementById("search").value;
-          if (text.length) {
-            newNodes = fuzzySearch.search(text);
-            resetUi(); 
-            createUiFromNodes(newNodes) 
-            if (newNodes.length) focusItem(0);
-  
-            if (!newNodes.length || text !== newNodes[0].title) {
-              addCreateCategoryButton(text);
-            }
-  
-            // focus new node option without user action
-            console.log(!newNodes.length);
-            if (!newNodes.length) {
-              focusItem(0);
-            }
-  
-  
-          } else {
-            resetUi();
-            createUiFromNodes(categoryNodes);
-            if (currentNodeCount > 0) focusItem(0);
-          }
-          index = 0;
-        }, 0);
+
       }
     })
   })
 
-  nameFieldElement.addEventListener('input', updateNameTitleAttribute);
+  searchElement.addEventListener('input', () => {
+    // to get updated input value, we need to schedule it to the next tick
+    setTimeout( function() {
+      text = document.getElementById("search").value;
+      if (text.length) {
+        newNodes = fuzzySearch.search(text);
+        resetUi(); 
+        createUiFromNodes(newNodes) 
+        if (newNodes.length) focusItem(0);
 
-  searchElements[1].focus();
+        if (!newNodes.length || text !== newNodes[0].title) {
+          addCreateCategoryButton(text);
+        }
+
+        // focus new node option without user action
+        console.log(!newNodes.length);
+        if (!newNodes.length) {
+          focusItem(0);
+        }
+
+
+      } else {
+        resetUi();
+        createUiFromNodes(categoryNodes);
+        if (currentNodeCount > 0) focusItem(0);
+      }
+      index = 0;
+    }, 0);
+  })
+
+  nameElement.addEventListener('input', () => {
+    const inputValue = nameElement.value;
+    nameElement.setAttribute('title', `Name\n${inputValue}`);
+  });
 
   namePreviewElement.addEventListener("click", exposeName);
 
   function exposeName() {
     isNameExposed = true;
-    nameFieldElement.style.display = 'block';
+    nameElement.style.display = 'block';
     namePreviewElement.style.display = 'none';
     getCurrentUrlData((url, title) => {
       let strippedName = stripBookmarkName(title);
 
       const match = matchNameSuffix(strippedName);
 
-      nameFieldElement.value = strippedName;
+      nameElement.value = strippedName;
 
       // Selects (highlights) the portion of the string that is often removed.
-      if (match) nameFieldElement.setSelectionRange(match.index, match.index + match[0].length);
+      if (match) nameElement.setSelectionRange(match.index, match.index + match[0].length);
 
-      nameFieldElement.scrollLeft = nameFieldElement.scrollWidth;
+      nameElement.scrollLeft = nameElement.scrollWidth;
 
-      nameFieldElement.focus();
+      nameElement.focus();
       updateNameTitleAttribute();
     });
   }
