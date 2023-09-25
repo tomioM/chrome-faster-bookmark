@@ -33,7 +33,7 @@
 }
 
 em {
-  color: var(--item-select-bg);
+  color: var(--focus);
   font-weight: 700;
 }
 .focus em {
@@ -140,16 +140,6 @@ span.folder.focus:hover {
 
 span.folder:first-child {
   border-top-color: transparent;
-}
-
-span.create {
-  /* margin-top: 10px; */
-  /* border-top: 1px solid var(--detail-colour); */
-  /* white-space: normal; */
-}
-
-span.create:focus {
-  background-color: red !important;
 }
 
 #wrapper {
