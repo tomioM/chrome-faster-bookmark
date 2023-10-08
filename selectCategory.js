@@ -8,6 +8,7 @@ var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const nameSuffixRegex = /( -| –| —| ●|:| \|| •)(?!.*( -| –| —| ●|:| \|| •)).*/;
 const notificationPrefixRegex = /^\(\d+\)/;
+const tagsRegex = / #(?![0-9])([^\s]*)/g;
 
 
 
@@ -181,9 +182,16 @@ function matchNameSuffix(inputString) {
 
 function matchNotificationPrefix(inputString) {
   // Use the regex pattern to match text within the input
-  console.log(inputString)
   const match = inputString.match(notificationPrefixRegex);
   
+  if (match) return match;
+  else return '';
+}
+
+function matchTags(inputString) {
+  // Use the regex pattern to match text within the input
+  const match = inputString.match(tagsRegex);
+  console.log(match);
   if (match) return match;
   else return '';
 }
@@ -193,6 +201,8 @@ function stripBookmarkName(inputString) {
   let strippedString = inputString;
 
   strippedString = strippedString.replace(notificationPrefixRegex, '');
+
+  strippedString = strippedString.replace(tagsRegex, '');
 
   if (!isNameExposed) strippedString = strippedString.replace(nameSuffixRegex, '');
 
@@ -275,7 +285,8 @@ function updateNameTitle() {
 
     highlightedHTML = wrapSubstringWithSpan(highlightedHTML, [ 
       matchNameSuffix(highlightedHTML)[0],
-      matchNotificationPrefix(highlightedHTML)[0]
+      matchNotificationPrefix(highlightedHTML)[0],
+      ...matchTags(highlightedHTML)
     ], 'omitted');
 
     namePreviewElement.innerHTML = highlightedHTML;
