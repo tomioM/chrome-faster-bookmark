@@ -4,6 +4,7 @@ var focusedElement;
 var fuzzySearch;
 var currentNodeCount = 0;
 var isNameExposed = false;
+var isMarkedImportant = false;
 var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const nameSuffixRegex = /( -| –| —| ●|:| \|| •)(?!.*( -| –| —| ●|:| \|| •)).*/;
@@ -324,6 +325,21 @@ function updateNameTitle() {
           exposeName();
         }
   
+      } else if (e.ctrlKey && e.key == 'i') {
+        if (!isMarkedImportant) {
+          console.log('marking');
+          if (isNameExposed) {
+            inputElements[0].value = markImportant(inputElements[0].value);
+          } else {
+            namePreviewElement.innerHTML = markImportant(namePreviewElement.innerHTML);
+          }
+        } else {
+          if (isNameExposed) {
+            inputElements[0].value = unmarkImportant(inputElements[0].value);
+          } else {
+            namePreviewElement.innerHTML = unmarkImportant(namePreviewElement.innerHTML);
+          }
+        }
       } else if (e.keyCode == CONFIRM_KEYCODE) {
         if (currentNodeCount > 0) triggerClick(focusedElement);
       
@@ -332,6 +348,16 @@ function updateNameTitle() {
       }
     })
   })
+
+  function markImportant(inputString) {
+    isMarkedImportant = true;
+    return '⭐ ' + inputString;
+  }
+
+  function unmarkImportant(inputString) {
+    isMarkedImportant = false;
+    return inputString.replace('⭐ ', '');
+  }
 
   searchElement.addEventListener('input', () => {
     // to get updated input value, we need to schedule it to the next tick
@@ -367,12 +393,16 @@ function updateNameTitle() {
 
   namePreviewElement.addEventListener("click", exposeName);
 
-  function exposeName() {
+  async function exposeName() {
     isNameExposed = true;
     nameElement.style.display = 'block';
     namePreviewElement.style.display = 'none';
     getCurrentUrlData((url, title) => {
       let strippedName = stripBookmarkName(title);
+
+      if (isMarkedImportant) {
+        strippedName = markImportant(strippedName);
+      };
 
       const match = matchNameSuffix(strippedName);
 
