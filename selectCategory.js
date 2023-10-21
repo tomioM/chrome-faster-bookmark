@@ -150,7 +150,7 @@ function addCreateCategoryButton(categoryName) {
   el.setAttribute("data-title", categoryName);
   el.classList.add("folder");
   el.classList.add("create");
-  el.innerHTML = chrome.i18n.getMessage("new") + "<em>create:</em> " + categoryName;
+  el.innerHTML = chrome.i18n.getMessage("new") + "<em>create folder:</em> " + categoryName;
 
   wrapper.appendChild(el);
   currentNodeCount = currentNodeCount + 1;
