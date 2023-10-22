@@ -5,6 +5,7 @@ var fuzzySearch;
 var currentNodeCount = 0;
 var isNameExposed = false;
 var isMarkedImportant = false;
+var importantMarkStr = '⭐ ';
 var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const nameSuffixRegex = /( -| –| —| ●|:| \|| •)(?!.*( -| –| —| ●|:| \|| •)).*/;
@@ -84,7 +85,11 @@ function processBookmark(categoryId) {
         const editedTitle = nameElement.value
         addBookmarkToCategory(categoryId, editedTitle, url);
       } else {
-        addBookmarkToCategory(categoryId, stripBookmarkName(title), url);
+        if (isMarkedImportant) {
+          addBookmarkToCategory(categoryId, stripBookmarkName(importantMarkStr + title), url);
+        } else {
+          addBookmarkToCategory(categoryId, stripBookmarkName(title), url);
+        }
       }
       window.close();
     }
@@ -351,12 +356,12 @@ function updateNameTitle() {
 
   function markImportant(inputString) {
     isMarkedImportant = true;
-    return '⭐ ' + inputString;
+    return importantMarkStr + inputString;
   }
 
   function unmarkImportant(inputString) {
     isMarkedImportant = false;
-    return inputString.replace('⭐ ', '');
+    return inputString.replace(importantMarkStr, '');
   }
 
   searchElement.addEventListener('input', () => {
