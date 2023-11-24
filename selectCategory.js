@@ -86,7 +86,7 @@ function processBookmark(categoryId) {
         addBookmarkToCategory(categoryId, editedTitle, url);
       } else {
         if (isMarkedImportant) {
-          addBookmarkToCategory(categoryId, stripBookmarkName(importantMarkStr + title), url);
+          addBookmarkToCategory(categoryId, importantMarkStr + stripBookmarkName(title), url);
         } else {
           addBookmarkToCategory(categoryId, stripBookmarkName(title), url);
         }
