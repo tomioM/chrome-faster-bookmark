@@ -57,7 +57,7 @@ function createUiElement(node) {
 
   var parentsSpan = document.createElement("span");
   parentsSpan.setAttribute("class", "parent-details");
-  parentsSpan.innerHTML = `${parentStrings.join(' > ')}`;
+  parentsSpan.innerHTML = `${parentStrings.length ? '< ': ''}${parentStrings.reverse().join(' < ')}`;
   
   el.appendChild(parentsSpan)
 

@@ -38,9 +38,13 @@ em {
 }
 
 .parent-details {
-  font-size: 0.8em;
-  text-align: left;
+  font-size: 0.9em;
   color: var(--detail-colour);
+  margin-left: 6px;
+}
+
+span.folder.focus > .parent-details {
+  color: var(--background-colour);
 }
 
 .focus em {
@@ -117,14 +121,13 @@ input:focus {
 }
 
 span.folder {
-  /*font-family: "Lucida Grande", Tahoma, sans-serif;*/
+  display: flex;
+  align-items: center;
   font-size: 14px;
   color: var(--text-colour);
-  display: block;
   white-space: nowrap;
   padding: 5px 10px;
   cursor: pointer;
-  /* -webkit-transition: background 0.1s ease-out; */
 }
 
 span.folder:hover + span.folder:not(.create), .focus + span.folder:not(.create) {
