@@ -34,13 +34,15 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results) {
 
 };
 
-function createUiElement(node) {
+function createUiElement(node, parentTitle) {
 
   var el = document.createElement("span");
   el.setAttribute("data-id", node.id);
   el.setAttribute("class", "folder");
   el.setAttribute("data-count", node.children.length);
   el.setAttribute("data-title", node.title);
+  // el.setAttribute("data-parent", node.parentId);
+  // el.setAttribute("title", `Parent folder: ${parentTitle}`);
   el.innerHTML = node.title;
 
   return el;
@@ -119,17 +121,26 @@ function getCurrentUrlData(callbackFn) {
 function createUiFromNodes( categoryNodes ) {
 
   var categoryUiElements = [];
+  var nodeParents = [];
   currentNodeCount = categoryNodes.length;
   // console.log(categoryNodes);
 
-  categoryNodes.forEach( function( node ) {
-    categoryUiElements.push( createUiElement(node) );
+  categoryNodes.forEach(node => {
+    nodeParents.push(node.parentId)
   })
 
-  categoryUiElements.forEach( function( element ) {
-    wrapper.appendChild( element );
-  });
+  console.log(nodeParents);
 
+  chrome.bookmarks.get(nodeParents, (parentNodes) => {
+    console.log(parentNodes)
+    categoryNodes.forEach( function( node, index ) {
+      categoryUiElements.push( createUiElement(node, parentNodes[index].title) );
+    })
+  
+    categoryUiElements.forEach( function( element ) {
+      wrapper.appendChild( element );
+    });
+  })
 };
 
 function resetUi() {
