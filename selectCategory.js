@@ -28,8 +28,8 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
   nodeArray.forEach( function( node ) {
     const currentPath = (node.id > 0) ? [...path, node.title]: [];
 
-    if (filterFn(node)) {
-      results.push({
+    if (filterFn(node) && !node.title.toLowerCase().includes('archive')) {
+    results.push({
         ...node,
         path: currentPath,
         // Slightly gross solution for allowing paths to be matched in both directions
@@ -37,7 +37,7 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
         joinedPathReversed: currentPath.slice(1).reverse().join(' '),
       })
     };
-    if (node.children) filterRecursively(node.children, childrenProperty, filterFn, results, currentPath);
+    if (node.children && !node.title.toLowerCase().includes('archive')) filterRecursively(node.children, childrenProperty, filterFn, results, currentPath);
   });
 
   return results;
@@ -174,7 +174,7 @@ function addCreateCategoryButton(categoryName) {
   el.setAttribute("data-title", categoryName);
   el.classList.add("folder");
   el.classList.add("create");
-  el.innerHTML = chrome.i18n.getMessage("new") + "<em>create folder:</em> " + categoryName;
+  el.innerHTML = chrome.i18n.getMessage("new") + `<span><em>create folder:</em> ${categoryName}</span>`;
 
   wrapper.appendChild(el);
   currentNodeCount = currentNodeCount + 1;
