@@ -20,30 +20,38 @@ var UP_KEYCODE = 38;
 var CONFIRM_KEYCODE = 13;
 
 // Filter function is the create tree function
-function filterRecursively(nodeArray, childrenProperty, filterFn, results) {
+function filterRecursively(nodeArray, childrenProperty, filterFn, results, path = []) {
 
   // console.log(nodeArray);
   results = results || [];
 
   nodeArray.forEach( function( node ) {
-    if (filterFn(node)) results.push( node );
-    if (node.children) filterRecursively(node.children, childrenProperty, filterFn, results);
+    const currentPath = (node.id > 0) ? [...path, node.title]: [];
+
+    if (filterFn(node)) {
+      results.push({
+        node: node,
+        path: currentPath
+      })
+    };
+    if (node.children) filterRecursively(node.children, childrenProperty, filterFn, results, currentPath);
   });
 
   return results;
-
 };
 
-function createUiElement(node, parentTitle) {
+function createUiElement(folder) {
 
   var el = document.createElement("span");
-  el.setAttribute("data-id", node.id);
+  el.setAttribute("data-id", folder.node.id);
   el.setAttribute("class", "folder");
-  el.setAttribute("data-count", node.children.length);
-  el.setAttribute("data-title", node.title);
-  // el.setAttribute("data-parent", node.parentId);
-  // el.setAttribute("title", `Parent folder: ${parentTitle}`);
-  el.innerHTML = node.title;
+  el.setAttribute("data-count", folder.node.children.length);
+  el.setAttribute("data-title", folder.node.title);
+  el.setAttribute("data-path", folder.path.join('/'));
+  const parents = folder.path
+  folder.path.pop()
+  el.setAttribute("title", `Parent folder(s): ${parents.join(' > ')}`);
+  el.innerHTML = folder.node.title;
 
   return el;
 
@@ -121,26 +129,15 @@ function getCurrentUrlData(callbackFn) {
 function createUiFromNodes( categoryNodes ) {
 
   var categoryUiElements = [];
-  var nodeParents = [];
   currentNodeCount = categoryNodes.length;
-  // console.log(categoryNodes);
 
-  categoryNodes.forEach(node => {
-    nodeParents.push(node.parentId)
+  categoryNodes.forEach( function( node, index ) {
+    categoryUiElements.push( createUiElement(node) );
   })
 
-  console.log(nodeParents);
-
-  chrome.bookmarks.get(nodeParents, (parentNodes) => {
-    console.log(parentNodes)
-    categoryNodes.forEach( function( node, index ) {
-      categoryUiElements.push( createUiElement(node, parentNodes[index].title) );
-    })
-  
-    categoryUiElements.forEach( function( element ) {
-      wrapper.appendChild( element );
-    });
-  })
+  categoryUiElements.forEach( function( element ) {
+    wrapper.appendChild( element );
+  });
 };
 
 function resetUi() {
@@ -244,13 +241,14 @@ function createInitialTree() {
     })
 
     categoryNodes.sort(function(a, b) {
-      return (b.dateGroupModified || b.dateAdded || 0) - (a.dateGroupModified || a.dateAdded || 0);
+      return (b.node.dateGroupModified || b.node.dateAdded || 0) - (a.node.dateGroupModified || a.node.dateAdded || 0);
     });
 
     createUiFromNodes( categoryNodes );
 
     //wrapper.style.width = wrapper.clientWidth + "px";
 
+    console.log(categoryNodes)
     if (currentNodeCount > 0) focusItem(0);
 
     fuzzySearch = new Fuse(categoryNodes, options);
