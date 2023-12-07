@@ -155,6 +155,7 @@ span.folder:first-child {
 #wrapper {
   padding-top: 10px;
   display: block;
+  overflow: hidden;
   padding-right: 4px;
   overflow-y: auto;
   height: 350px;

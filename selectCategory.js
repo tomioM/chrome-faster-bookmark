@@ -32,7 +32,9 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
       results.push({
         ...node,
         path: currentPath,
+        // Slightly gross solution for allowing paths to be matched in both directions
         joinedPath: currentPath.slice(1).join(' '),
+        joinedPathReversed: currentPath.slice(1).reverse().join(' '),
       })
     };
     if (node.children) filterRecursively(node.children, childrenProperty, filterFn, results, currentPath);
@@ -43,7 +45,7 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
 
 function createUiElement(node) {
 
-  const allParentStrings = node.path.slice(0, -1);
+  // const allParentStrings = node.path.slice(0, -1);
   const parentStrings = node.path.slice(1, -1);
 
   var el = document.createElement("span");
@@ -52,7 +54,7 @@ function createUiElement(node) {
   el.setAttribute("data-count", node.children.length);
   el.setAttribute("data-title", node.title);
   el.setAttribute("data-path", node.path.join('/'));
-  el.setAttribute("title", `Parent folder(s): ${allParentStrings.join(' > ')}`);
+  el.setAttribute("title", node.path.join(' > '));
   el.innerHTML = node.title;
 
   var parentsSpan = document.createElement("span");
@@ -241,8 +243,9 @@ function createInitialTree() {
     wrapper = document.getElementById("wrapper");
 
     var options = {
-      keys: ['title', 'joinedPath' ],
-      threshold: 0.4
+      keys: ['title', 'joinedPath', 'joinedPathReversed' ],
+      threshold: 0.4,
+      ignoreLocation: true
     }
     
     categoryNodes = filterRecursively(t, "children", function(node) {
