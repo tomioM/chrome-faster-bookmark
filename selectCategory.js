@@ -30,8 +30,9 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
 
     if (filterFn(node)) {
       results.push({
-        node: node,
-        path: currentPath
+        ...node,
+        path: currentPath,
+        joinedPath: currentPath.slice(1).join(' '),
       })
     };
     if (node.children) filterRecursively(node.children, childrenProperty, filterFn, results, currentPath);
@@ -40,18 +41,26 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
   return results;
 };
 
-function createUiElement(folder) {
+function createUiElement(node) {
+
+  const allParentStrings = node.path.slice(1, -1);
+  const parentStrings = node.path.slice(1, -1);
 
   var el = document.createElement("span");
-  el.setAttribute("data-id", folder.node.id);
+  el.setAttribute("data-id", node.id);
   el.setAttribute("class", "folder");
-  el.setAttribute("data-count", folder.node.children.length);
-  el.setAttribute("data-title", folder.node.title);
-  el.setAttribute("data-path", folder.path.join('/'));
-  const parents = folder.path
-  folder.path.pop()
-  el.setAttribute("title", `Parent folder(s): ${parents.join(' > ')}`);
-  el.innerHTML = folder.node.title;
+  el.setAttribute("data-count", node.children.length);
+  el.setAttribute("data-title", node.title);
+  el.setAttribute("data-path", node.path.join('/'));
+  el.setAttribute("title", `Parent folder(s): ${allParentStrings.join(' > ')}`);
+  el.innerHTML = node.title;
+
+  var parentsSpan = document.createElement("span");
+  parentsSpan.setAttribute("class", "parent-details");
+  parentsSpan.innerHTML = `${parentStrings.join(' > ')}`;
+  
+  el.appendChild(parentsSpan)
+
 
   return el;
 
@@ -232,7 +241,7 @@ function createInitialTree() {
     wrapper = document.getElementById("wrapper");
 
     var options = {
-      keys: ['title'],
+      keys: ['title', 'joinedPath' ],
       threshold: 0.4
     }
     
@@ -241,7 +250,7 @@ function createInitialTree() {
     })
 
     categoryNodes.sort(function(a, b) {
-      return (b.node.dateGroupModified || b.node.dateAdded || 0) - (a.node.dateGroupModified || a.node.dateAdded || 0);
+      return (b.dateGroupModified || b.dateAdded || 0) - (a.dateGroupModified || a.dateAdded || 0);
     });
 
     createUiFromNodes( categoryNodes );
@@ -251,6 +260,7 @@ function createInitialTree() {
     console.log(categoryNodes)
     if (currentNodeCount > 0) focusItem(0);
 
+    console.log(categoryNodes)
     fuzzySearch = new Fuse(categoryNodes, options);
 
     wrapper.addEventListener("click", function(e) {
@@ -379,6 +389,7 @@ function updateNameTitle() {
       text = document.getElementById("search").value;
       if (text.length) {
         newNodes = fuzzySearch.search(text);
+        console.log(newNodes)
         resetUi(); 
         createUiFromNodes(newNodes) 
         if (newNodes.length) focusItem(0);

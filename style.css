@@ -36,6 +36,13 @@ em {
   color: var(--focus);
   font-weight: 700;
 }
+
+.parent-details {
+  font-size: 0.8em;
+  text-align: left;
+  color: var(--detail-colour);
+}
+
 .focus em {
   color: var(--background-colour);
 }
