@@ -43,7 +43,7 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
 
 function createUiElement(node) {
 
-  const allParentStrings = node.path.slice(1, -1);
+  const allParentStrings = node.path.slice(0, -1);
   const parentStrings = node.path.slice(1, -1);
 
   var el = document.createElement("span");
