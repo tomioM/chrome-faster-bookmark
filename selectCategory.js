@@ -5,7 +5,7 @@ var fuzzySearch;
 var currentNodeCount = 0;
 var isNameExposed = false;
 var isMarkedImportant = false;
-var importantMarkStr = '⭐ ';
+var importantMarkStr = '★ ';
 var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const nameSuffixRegex = /( -| –| —| ●|:| \|| •)(?!.*( -| –| —| ●|:| \|| •)).*/;
