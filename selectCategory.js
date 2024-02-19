@@ -12,6 +12,8 @@ const nameSuffixRegex = /( -| –| —| ●|:| \|| •)(?!.*( -| –| —| ●|:
 const notificationPrefixRegex = /^\(\d+\)/;
 const tagsRegex = / #(?![0-9])([^\s]*)/g;
 
+const limitRegex = / \[s*<(\d+)\s*\]/;
+
 
 
 
@@ -44,23 +46,38 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
 };
 
 function createUiElement(node) {
-
   // const allParentStrings = node.path.slice(0, -1);
   const parentStrings = node.path.slice(1, -1);
+  const title = node.title.replace(limitRegex, "");
+  const childrenLength = node.children.length;
+
 
   var el = document.createElement("span");
   el.setAttribute("data-id", node.id);
+
+
   el.setAttribute("class", "folder");
-  el.setAttribute("data-count", node.children.length);
-  el.setAttribute("data-title", node.title);
+
+
+  el.setAttribute("data-title", title);
+  el.setAttribute("data-count", childrenLength);
   el.setAttribute("data-path", node.path.join('/'));
   el.setAttribute("title", node.path.join(' > '));
-  el.innerHTML = node.title;
+  el.innerHTML = title;
+
+  const limit = node.title.match(limitRegex);
+  if (limit) {
+    el.setAttribute("data-limit", limit[1]);
+    el.innerHTML += ` [${childrenLength}/${limit[1]}]`;
+  } else {
+    el.setAttribute("data-limit", limit);
+  }
 
   var parentsSpan = document.createElement("span");
   parentsSpan.setAttribute("class", "parent-details");
   parentsSpan.innerHTML = `${parentStrings.length ? '< ': ''}${parentStrings.reverse().join(' < ')}`;
-  
+
+
   el.appendChild(parentsSpan)
 
 
