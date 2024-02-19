@@ -90,6 +90,10 @@ function triggerClick(element) {
   var categoryId = element.getAttribute("data-id");
   var newCategoryTitle;
 
+
+  const limit = parseInt(element.getAttribute("data-limit"));
+  const count = parseInt(element.getAttribute("data-count"));
+
   if (categoryId == "NEW") {
 
     if(confirm("Do you want to create a new folder?")) {
@@ -106,9 +110,15 @@ function triggerClick(element) {
     }
 
   } else {
+    console.log(limit)
+    console.log(count)
 
-    processBookmark(categoryId);
-
+    if(!limit || limit > count) {
+      processBookmark(categoryId);
+    } else if (count >= limit 
+      && confirm("Are you sure you want to exceed this folders bookmark limit?")) {
+      processBookmark(categoryId);
+    }
   }
 
 }
