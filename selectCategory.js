@@ -6,6 +6,7 @@ var currentNodeCount = 0;
 var isNameExposed = false;
 var isMarkedImportant = false;
 var importantMarkStr = '★ ';
+var importantMarkLimit = 10;
 var nameElement = document.getElementById("name-field");
 // name suffix is removed by default when name is not exposed; however, when the name is exposed the suffix is selected (highlighted)
 const nameSuffixRegex = /( -| –| —| ●|:| \|| •)(?!.*( -| –| —| ●|:| \|| •)).*/;
@@ -71,7 +72,7 @@ function createUiElement(node) {
   el.appendChild(parentsSpan)
 
 
-  const limit = node.title.match(limitRegex);
+  const limit = node.title.match(limitRegex) || node.title.includes("★") ? [0, importantMarkLimit] : null;
   if (limit) {
     el.setAttribute("data-limit", limit[1]);
     var limitSpan = document.createElement("span");
@@ -125,7 +126,7 @@ function triggerClick(element) {
     if(!limit || limit > count) {
       processBookmark(categoryId);
     } else if (count >= limit 
-      && confirm("Are you sure you want to exceed this folders bookmark limit?")) {
+      && confirm("Are you sure you want to exceed this folder's bookmark limit?")) {
       processBookmark(categoryId);
     }
   }
