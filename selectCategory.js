@@ -47,21 +47,16 @@ function filterRecursively(nodeArray, childrenProperty, filterFn, results, path 
 };
 
 function createUiElement(node) {
-  // const allParentStrings = node.path.slice(0, -1);
   const parentStrings = node.path.slice(1, -1);
   const title = node.title.replace(limitRegex, "");
-  const childrenLength = node.children.length;
+  const count = node.children.length;
 
 
   var el = document.createElement("span");
   el.setAttribute("data-id", node.id);
-
-
   el.setAttribute("class", "folder");
-
-
   el.setAttribute("data-title", title);
-  el.setAttribute("data-count", childrenLength);
+  el.setAttribute("data-count", count);
   el.setAttribute("data-path", node.path.join('/'));
   el.setAttribute("title", node.path.join(' > '));
   el.innerHTML = title;
@@ -79,30 +74,30 @@ function createUiElement(node) {
   
   if (limit) {
     el.setAttribute("data-limit", limit[1]);
-    var limitSpan = document.createElement("span");
-    if (childrenLength >= limit[1]) {
-      limitSpan.setAttribute("class", "limit-chip overflow");
+    const limitSpan = document.createElement("span");
+    if (count >= limit[1]) {
+      limitSpan.setAttribute("class", "count-chip overflow");
     } else {
-      limitSpan.setAttribute("class", "limit-chip");
+      limitSpan.setAttribute("class", "count-chip");
     }
-    limitSpan.innerHTML = `${childrenLength}/${limit[1]}`;
+    limitSpan.innerHTML = `${count}/${limit[1]}`;
     el.appendChild(limitSpan)
-  
   } else {
-    el.setAttribute("data-limit", limit);
+    const countSpan = document.createElement("span");
+    countSpan.setAttribute("class", "count-chip unlimited");
+    // el.setAttribute("data-limit", limit);
+
+    countSpan.innerHTML = `${count}`;
+    el.appendChild(countSpan)
   }
   
-
-
   return el;
-
 }
 
 function triggerClick(element) {
 
   var categoryId = element.getAttribute("data-id");
   var newCategoryTitle;
-
 
   const limit = parseInt(element.getAttribute("data-limit"));
   const count = parseInt(element.getAttribute("data-count"));
@@ -123,13 +118,12 @@ function triggerClick(element) {
     }
 
   } else {
-    console.log(limit)
-    console.log(count)
-
     if(!limit || limit > count) {
       processBookmark(categoryId);
-    } else if (count >= limit 
-      && confirm("Are you sure you want to exceed this folder's bookmark limit?")) {
+    } else if (
+      count >= limit 
+      && confirm("Are you sure you want to exceed this folder's bookmark limit?")
+      ) {
       processBookmark(categoryId);
     }
   }
@@ -256,7 +250,7 @@ function matchNotificationPrefix(inputString) {
 function matchTags(inputString) {
   // Use the regex pattern to match text within the input
   const match = inputString.match(tagsRegex);
-  console.log(match);
+
   if (match) return match;
   else return '';
 }
@@ -359,6 +353,19 @@ function updateNameTitle() {
 
     namePreviewElement.innerHTML = highlightedHTML;
   })
+
+  document.addEventListener('keydown', function(event) {
+      if (event.key === 'Control') {
+          document.body.classList.add('show-counts');
+          console.log("hey")
+      }
+  });
+
+  document.addEventListener('keyup', function(event) {
+      if (event.key === 'Control') {
+          document.body.classList.remove('show-counts');
+      }
+  });
 
   inputElements[1].focus();
   createInitialTree();
