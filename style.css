@@ -41,7 +41,26 @@ em {
   font-size: 0.9em;
   color: var(--detail-colour);
   margin-left: 6px;
+  margin-right: 4px;
+  overflow: auto;
 }
+
+.limit-chip {
+  font-size: 0.8em;
+  font-weight: bold;
+  color: var(--link-colour);
+  margin-left: auto;
+  padding-top: 0.05rem;
+  padding-bottom: 0.15rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  background-color: var(--input);
+  border-radius: 10px;
+}
+
+/* span.folder.focus > .limit-chip {
+  color: var(--background-colour);
+} */
 
 span.folder.focus > .parent-details {
   color: var(--background-colour);
@@ -122,7 +141,7 @@ input:focus {
 
 span.folder {
   display: flex;
-  align-items: center;
+  align-items: end;
   font-size: 14px;
   color: var(--text-colour);
   white-space: nowrap;

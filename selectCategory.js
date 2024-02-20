@@ -65,20 +65,25 @@ function createUiElement(node) {
   el.setAttribute("title", node.path.join(' > '));
   el.innerHTML = title;
 
-  const limit = node.title.match(limitRegex);
-  if (limit) {
-    el.setAttribute("data-limit", limit[1]);
-    el.innerHTML += ` [${childrenLength}/${limit[1]}]`;
-  } else {
-    el.setAttribute("data-limit", limit);
-  }
-
   var parentsSpan = document.createElement("span");
   parentsSpan.setAttribute("class", "parent-details");
   parentsSpan.innerHTML = `${parentStrings.length ? '< ': ''}${parentStrings.reverse().join(' < ')}`;
-
-
   el.appendChild(parentsSpan)
+
+
+  const limit = node.title.match(limitRegex);
+  if (limit) {
+    el.setAttribute("data-limit", limit[1]);
+    var limitSpan = document.createElement("span");
+    limitSpan.setAttribute("class", "limit-chip");
+    limitSpan.innerHTML = `${childrenLength}/${limit[1]}`;
+    el.appendChild(limitSpan)
+  
+    // el.innerHTML += ` [${childrenLength}/${limit[1]}]`;
+  } else {
+    el.setAttribute("data-limit", limit);
+  }
+  
 
 
   return el;
