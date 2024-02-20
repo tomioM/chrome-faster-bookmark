@@ -75,7 +75,11 @@ function createUiElement(node) {
   if (limit) {
     el.setAttribute("data-limit", limit[1]);
     var limitSpan = document.createElement("span");
-    limitSpan.setAttribute("class", "limit-chip");
+    if (childrenLength >= limit[1]) {
+      limitSpan.setAttribute("class", "limit-chip overflow");
+    } else {
+      limitSpan.setAttribute("class", "limit-chip");
+    }
     limitSpan.innerHTML = `${childrenLength}/${limit[1]}`;
     el.appendChild(limitSpan)
   

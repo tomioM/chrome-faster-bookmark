@@ -58,6 +58,19 @@ em {
   border-radius: 10px;
 }
 
+.overflow {
+  color: orangered;
+  padding-left: 0.4rem;
+
+}
+
+.overflow::before {
+  content: '●';
+  margin-right: 0.2rem;
+  color: orangered;
+}
+
+
 /* span.folder.focus > .limit-chip {
   color: var(--background-colour);
 } */
