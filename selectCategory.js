@@ -71,8 +71,12 @@ function createUiElement(node) {
   parentsSpan.innerHTML = `${parentStrings.length ? '< ': ''}${parentStrings.reverse().join(' < ')}`;
   el.appendChild(parentsSpan)
 
+  let limit = node.title.match(limitRegex)
 
-  const limit = node.title.match(limitRegex) || node.title.includes("★") ? [0, importantMarkLimit] : null;
+  if (node.title.includes("★")) {
+    limit = limit || [0, importantMarkLimit];
+  }
+  
   if (limit) {
     el.setAttribute("data-limit", limit[1]);
     var limitSpan = document.createElement("span");
@@ -84,7 +88,6 @@ function createUiElement(node) {
     limitSpan.innerHTML = `${childrenLength}/${limit[1]}`;
     el.appendChild(limitSpan)
   
-    // el.innerHTML += ` [${childrenLength}/${limit[1]}]`;
   } else {
     el.setAttribute("data-limit", limit);
   }
